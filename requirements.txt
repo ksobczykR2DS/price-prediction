@@ -1,0 +1,10 @@
+streamlit
+scikit-learn
+pandas
+jupyter
+jupyterlab
+kaggle
+ydata-profiling
+xgboost
+scikit-optimize
+click
