@@ -1,9 +1,9 @@
-streamlit
 scikit-learn
 pandas
 jupyter
 jupyterlab
-kaggle
+matplotlib
+seaborn
 ydata-profiling
 xgboost
 scikit-optimize

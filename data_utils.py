@@ -71,12 +71,8 @@ def load_training_data(feature_engineering):
     df = load_raw_data(feature_engineering=feature_engineering)
     target_col = 'SalePrice'
     y = df.pop(target_col)
-    X = df.copy()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0, shuffle=True)
+    x = df.copy()
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0, shuffle=True)
 
-    print(f"{X_train.shape[0]=}, {X_test.shape[0]=}\n{y_train.shape[0]=}, {y_test.shape[0]=}")
-    return X_train, X_test, y_train, y_test
-
-
-if __name__ == '__main__':
-    load_training_data()
+    print(f"{x_train.shape[0]=}, {x_test.shape[0]=}\n{y_train.shape[0]=}, {y_test.shape[0]=}")
+    return x_train, x_test, y_train, y_test
