@@ -72,12 +72,12 @@ MODELS_PARAMS = {
             'regressor_model__learning_rate': Real(1e-2, 1e-1),
             'regressor_model__verbose': Integer(-10, 10),
             'regressor_model__max_bin': Integer(50, 250),
-            'regressor_model__bagging_fraction': Real(0, 1),
+            'regressor_model__bagging_fraction': Real(0.1, 1),
             'regressor_model__bagging_freq': Integer(2, 10),
             'regressor_model__bagging_seed': Integer(1, 10),
             'regressor_model__feature_fraction': Real(0, 1),
             'regressor_model__feature_fraction_seed': Integer(1, 10),
-            'regressor_model__objective': 'regression'
+            'regressor_model__objective': Categorical(['regression'])
         }],
     'GBM': [
         {
