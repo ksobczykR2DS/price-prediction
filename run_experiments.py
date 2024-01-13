@@ -22,17 +22,56 @@ MODELS_DICT = {
 }
 
 MODELS_PARAMS = {
-    'LR': {},
-    'DT': {},
-    'RF': {},
+    'LR': {
+        'regressor_model_fit_intercept': Categorical([True, False])
+    },
+    'DT': {
+        'regressor_random_state': 0,
+        'regressor_max_depth': Integer(3, 17),
+        'regressor_min_samples_leaf': Integer(10, 50),
+        'regressor_model_min_samples_split': Integer(1, 20),
+        'regressor_model_max_features': Categorical(['auto', 'sqrt', 'log2', None]),
+    },
+    'RF': {
+        'regressor_random_state': 0,
+        'regressor_n_estimators': Integer(200, 1500),
+        'regressor_max_depth': Integer(3, 17),
+        'regressor_min_samples_leaf': Integer(10, 50),
+        'regressor_min_samples_split': Integer(3, 20),
+        'regressor_max_features': Categorical(['auto', 'sqrt', 'log2', None])
+
+    },
     'SVR': {
         'regressor_model__C': Real(1e-6, 1e+6, prior='log-uniform'),
-        'regressor_model__gamma': Real(1e-6, 1e+1, prior='log-uniform'),
-        'regressor_model__degree': Integer(1, 8),
-        'regressor_model__kernel': Categorical(['linear', 'poly', 'rbf']),
+        'regressor_model__gamma': Real(1e-4, 1e-1, prior='log-uniform'),
+        'regressor_model__degree': Integer(1, 5),
+        'regressor_model__kernel': Categorical(['linear', 'poly', 'rbf', 'sigmoid']),
     },
-    'GBM': {},
-    'XGB': {},
+    'GBM': {
+        'regressor_random_state': 0,
+        'regressor_n_estimators': Integer(2000, 6000),
+        'regressor_learning_rate': Real(0.01, 0.05),
+        'regressor_max_depth': Integer(2, 6),
+        'regressor_max_features': Categorical(['auto', 'sqrt']),
+        'regressor_min_samples_leaf': (10, 20),
+        'regressor_min_samples_split': (10, 20),
+        'regressor_loss': Categorical(['huber'])
+    },
+    'XGB': {
+        'regressor_random_state': 0,
+        'regressor_n_estimators': Integer(2000, 6000),
+        'regressor_learning_rate': Real(0.01, 0.05),
+        'regressor_max_depth': Integer(2, 6),
+        'regressor_min_child_weight': Real(0, 0.5),
+        'regressor_subsample': 0.7,
+        'regressor_reg_alpha': Real(0.01, 0.05),
+        'regressor_gamma': Real(0, 0.05),
+        'regressor_colsample_bytree': Real(0.03, 0.08),
+        'regressor_max_features': Categorical(['auto', 'sqrt']),
+        'regressor_min_samples_leaf': (10, 20),
+        'regressor_min_samples_split': (10, 20),
+        'regressor_nthread': -1
+    },
 }
 
 
@@ -43,7 +82,8 @@ MODELS_PARAMS = {
 @click.option('--n_iter', required=True, type=int, help='number of iterations for hyperparameters tuning')
 def main(model_names_list, feature_engineering, n_iter):
     """
-    Runs experiments for selected models
+    Runs experiments with BayesSearch for selected models
+
     Usage:
     ```
     python run_experiments.py --model_names_list=LR,DT,RF,SVR --feature_engineering --n_iter=10
