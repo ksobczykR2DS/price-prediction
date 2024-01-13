@@ -125,13 +125,15 @@ def main(model_names_list, feature_engineering, n_iter):
     """
     print('Loading models...')
     model_dict = {}
-    results = []
+
     try:
         for model_name in model_names_list.split(','):
             assert model_name in MODELS_DICT.keys(), f'Unknown model_name: {model_name}'
             model = MODELS_DICT[model_name]
             model_dict[model_name] = model
+
         x_train, x_test, y_train, y_test = load_training_data(feature_engineering=feature_engineering)
+
         for model_name, model in model_dict.items():
             print(f'Running experiments for {model_name}')
             pipe = Pipeline([('scaler', StandardScaler()), ('regressor_model', model)])
@@ -147,13 +149,12 @@ def main(model_names_list, feature_engineering, n_iter):
 
             best_score = opt.score(x_test, y_test)
             best_params = opt.best_params_
-            results.append({'Model': model_name, 'Score': best_score, **best_params})
+
+            result_df = pd.DataFrame([{**{'Model': model_name, 'Score': best_score}, **best_params}])
+            result_df.to_csv(f'reports/model_results_{model_name}.csv', index=False)
 
     except Exception as e:
         print(f'An error occurred: {e}')
-
-    results_df = pd.DataFrame(results)
-    results_df.to_csv('reports/model_results.csv', index=False)
 
 
 if __name__ == '__main__':
