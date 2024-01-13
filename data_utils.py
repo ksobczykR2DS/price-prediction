@@ -32,9 +32,18 @@ def _fill_missing_values(df):
 def _feature_engineering(df):
     df['AgeOfProperty'] = df['YrSold'] - df['YearBuilt']
 
-    df['TotalSqFt'] = df['TotalBsmtSF'] + df['1stFlrSF'] + df['2ndFlrSF'] + df['GarageArea']
+    df['TotalSqFt'] = (df['BsmtFinSF1'] + df['BsmtFinSF2'] +
+                       df['1stFlrSF'] + df['2ndFlrSF'] + df['GarageArea'])
 
     df['GarageBuildYearsAfterHouse'] = df['GarageYrBlt'] - df['YearBuilt']
+
+    df['TotalBathrooms'] = (df['FullBath'] + (0.5 * df['HalfBath']) +
+                            df['BsmtFullBath'] + (0.5 * df['BsmtHalfBath']))
+
+    df['TotalPorchSF'] = (df['OpenPorchSF'] + df['3SsnPorch'] +
+                          df['EnclosedPorch'] + df['ScreenPorch'] +
+                          df['WoodDeckSF'])
+
     return df
 
 

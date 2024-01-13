@@ -7,5 +7,6 @@ matplotlib
 seaborn
 ydata-profiling
 xgboost
+lightgbm
 scikit-optimize
 click
