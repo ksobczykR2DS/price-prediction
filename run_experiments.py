@@ -75,7 +75,7 @@ MODELS_PARAMS = {
             'regressor_model__bagging_fraction': Real(0.1, 1),
             'regressor_model__bagging_freq': Integer(2, 10),
             'regressor_model__bagging_seed': Integer(1, 10),
-            'regressor_model__feature_fraction': Real(0, 1),
+            'regressor_model__feature_fraction': Real(0.1, 1),
             'regressor_model__feature_fraction_seed': Integer(1, 10),
             'regressor_model__objective': Categorical(['regression'])
         }],
