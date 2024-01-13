@@ -9,6 +9,7 @@ from sklearn.tree import DecisionTreeRegressor
 from skopt import BayesSearchCV
 from skopt.space import Real, Categorical, Integer
 from xgboost import XGBRegressor
+import numpy as np
 
 from data_utils import load_training_data
 
@@ -22,56 +23,59 @@ MODELS_DICT = {
 }
 
 MODELS_PARAMS = {
-    'LR': {
-        'regressor_model_fit_intercept': Categorical([True, False])
-    },
-    'DT': {
-        'regressor_random_state': 0,
-        'regressor_max_depth': Integer(3, 17),
-        'regressor_min_samples_leaf': Integer(10, 50),
-        'regressor_model_min_samples_split': Integer(1, 20),
-        'regressor_model_max_features': Categorical(['auto', 'sqrt', 'log2', None]),
-    },
-    'RF': {
-        'regressor_random_state': 0,
-        'regressor_n_estimators': Integer(200, 1500),
-        'regressor_max_depth': Integer(3, 17),
-        'regressor_min_samples_leaf': Integer(10, 50),
-        'regressor_min_samples_split': Integer(3, 20),
-        'regressor_max_features': Categorical(['auto', 'sqrt', 'log2', None])
-
-    },
-    'SVR': {
-        'regressor_model__C': Real(1e-6, 1e+6, prior='log-uniform'),
-        'regressor_model__gamma': Real(1e-4, 1e-1, prior='log-uniform'),
-        'regressor_model__degree': Integer(1, 5),
-        'regressor_model__kernel': Categorical(['linear', 'poly', 'rbf', 'sigmoid']),
-    },
-    'GBM': {
-        'regressor_random_state': 0,
-        'regressor_n_estimators': Integer(2000, 6000),
-        'regressor_learning_rate': Real(0.01, 0.05),
-        'regressor_max_depth': Integer(2, 6),
-        'regressor_max_features': Categorical(['auto', 'sqrt']),
-        'regressor_min_samples_leaf': (10, 20),
-        'regressor_min_samples_split': (10, 20),
-        'regressor_loss': Categorical(['huber'])
-    },
-    'XGB': {
-        'regressor_random_state': 0,
-        'regressor_n_estimators': Integer(2000, 6000),
-        'regressor_learning_rate': Real(0.01, 0.05),
-        'regressor_max_depth': Integer(2, 6),
-        'regressor_min_child_weight': Real(0, 0.5),
-        'regressor_subsample': 0.7,
-        'regressor_reg_alpha': Real(0.01, 0.05),
-        'regressor_gamma': Real(0, 0.05),
-        'regressor_colsample_bytree': Real(0.03, 0.08),
-        'regressor_max_features': Categorical(['auto', 'sqrt']),
-        'regressor_min_samples_leaf': (10, 20),
-        'regressor_min_samples_split': (10, 20),
-        'regressor_nthread': -1
-    },
+    'DT': [
+        {
+            'regressor_model__random_state': Categorical([0]),
+            'regressor_model__max_depth': Integer(3, 17),
+            'regressor_model__min_samples_leaf': Integer(10, 100),
+            'regressor_model__min_samples_split': Integer(2, 50),
+            'regressor_model__max_features': Categorical(['sqrt', 'log2', None]),
+        }
+    ],
+    'RF': [
+        {
+            'regressor_model__random_state': Categorical([0]),
+            'regressor_model__n_estimators': Integer(200, 1500),
+            'regressor_model__max_depth': Integer(3, 17),
+            'regressor_model__min_samples_leaf': Integer(10, 50),
+            'regressor_model__min_samples_split': Integer(3, 20),
+            'regressor_model__max_features': Categorical(['sqrt', 'log2', None])
+        }
+    ],
+    'SVR': [
+        {
+            'regressor_model__C': Real(1e-6, 1e+6, prior='log-uniform'),
+            'regressor_model__gamma': Real(1e-4, 1e-1, prior='log-uniform'),
+            'regressor_model__degree': Integer(1, 5),
+            'regressor_model__kernel': Categorical(['linear', 'poly', 'rbf', 'sigmoid']),
+        }
+    ],
+    'GBM': [
+        {
+            'regressor_model__random_state': Categorical([0]),
+            'regressor_model__n_estimators': Integer(2000, 6000),
+            'regressor_model__learning_rate': Real(0.01, 0.05),
+            'regressor_model__max_depth': Integer(2, 6),
+            'regressor_model__max_features': Categorical(['sqrt']),
+            'regressor_model__min_samples_leaf': Integer(10, 20),
+            'regressor_model__min_samples_split': Integer(10, 20),
+            'regressor_model__loss': Categorical(['huber'])
+        }
+    ],
+    'XGB': [
+        {
+            'regressor_model__random_state': Categorical([0]),
+            'regressor_model__n_estimators': Integer(2000, 6000),
+            'regressor_model__learning_rate': Real(0.01, 0.05),
+            'regressor_model__max_depth': Integer(2, 6),
+            'regressor_model__min_child_weight': Real(0, 0.5),
+            'regressor_model__subsample': Real(0.5, 1.0, prior='uniform'),
+            'regressor_model__reg_alpha': Real(0.01, 0.05),
+            'regressor_model__gamma': Real(0, 0.05),
+            'regressor_model__colsample_bytree': Real(0.03, 0.08),
+            'regressor_model__nthread': Categorical([-1])
+        }
+    ],
 }
 
 
@@ -86,7 +90,7 @@ def main(model_names_list, feature_engineering, n_iter):
 
     Usage:
     ```
-    python run_experiments.py --model_names_list=LR,DT,RF,SVR --feature_engineering --n_iter=10
+    python run_experiments.py --model_names_list=DT,RF,SVR,GBM,XGB --feature_engineering --n_iter=10
     ```
     """
     print('Loading models...')
@@ -108,6 +112,7 @@ def main(model_names_list, feature_engineering, n_iter):
                 random_state=7,
                 verbose=True
             )
+            np.int = np.int64
             opt.fit(x_train, y_train)
 
             best_score = opt.score(x_test, y_test)
