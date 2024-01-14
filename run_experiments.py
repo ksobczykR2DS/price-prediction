@@ -58,10 +58,23 @@ MODELS_PARAMS = {
     ],
     'SVR': [
         {
+            'regressor_model__random_state': Categorical([0]),
             'regressor_model__C': Real(10, 40, prior='log-uniform'),
             'regressor_model__gamma': Real(1e-4, 1e-1, prior='log-uniform'),
             'regressor_model__degree': Integer(1, 5),
             'regressor_model__kernel': Categorical(['linear', 'poly', 'rbf', 'sigmoid']),
+        }
+    ],
+    'GBM': [
+        {
+            'regressor_model__random_state': Categorical([0]),
+            'regressor_model__n_estimators': Integer(2000, 6000),
+            'regressor_model__learning_rate': Real(0.01, 0.05),
+            'regressor_model__max_depth': Integer(2, 6),
+            'regressor_model__max_features': Categorical(['sqrt']),
+            'regressor_model__min_samples_leaf': Integer(10, 20),
+            'regressor_model__min_samples_split': Integer(10, 20),
+            'regressor_model__loss': Categorical(['huber'])
         }
     ],
     'LGB': [
@@ -79,18 +92,6 @@ MODELS_PARAMS = {
             'regressor_model__feature_fraction_seed': Integer(1, 10),
             'regressor_model__objective': Categorical(['regression'])
         }],
-    'GBM': [
-        {
-            'regressor_model__random_state': Categorical([0]),
-            'regressor_model__n_estimators': Integer(2000, 6000),
-            'regressor_model__learning_rate': Real(0.01, 0.05),
-            'regressor_model__max_depth': Integer(2, 6),
-            'regressor_model__max_features': Categorical(['sqrt']),
-            'regressor_model__min_samples_leaf': Integer(10, 20),
-            'regressor_model__min_samples_split': Integer(10, 20),
-            'regressor_model__loss': Categorical(['huber'])
-        }
-    ],
     'XGB': [
         {
             'regressor_model__random_state': Categorical([0]),
