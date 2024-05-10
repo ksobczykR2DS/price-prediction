@@ -14,9 +14,10 @@ from skopt.space import Real, Categorical, Integer
 
 from data_utils import load_training_data
 
+
+# Implementacja modeli
 MODELS_DICT = {
     'Lasso': Lasso(),
-    'EN': ElasticNet(),
     'DT': DecisionTreeRegressor(),
     'RF': RandomForestRegressor(),
     'SVR': SVR(),
@@ -25,17 +26,12 @@ MODELS_DICT = {
     'XGB': XGBRegressor()
 }
 
+# Implementacja zakresów jakie bada BaysianSearch
 MODELS_PARAMS = {
     'Lasso': [
         {
             'regressor_model__random_state': Categorical([0]),
             'regressor_model__alpha': Real(1e-4, 1.0, prior='log-uniform')
-        }],
-    'EN': [
-        {
-            'regressor_model__random_state': Categorical([0]),
-            'regressor_model__alpha': Real(1e-4, 1.0, prior='log-uniform'),
-            'regressor_model__l1_ratio': Real(0.001, 1.0, prior='uniform')
         }],
     'DT': [
         {
@@ -109,7 +105,8 @@ MODELS_PARAMS = {
     ],
 }
 
-
+# Sposób wywołania tak jak w dokumentacji, musicie usunąć ten feature engineering (to było specific do projektu innego)
+# chyba najlepiej będzie jak sobie dodacie parametry 'dataset' do main()
 @click.command()
 @click.option('--model_names_list', required=True, type=str, help='list of models to run')
 @click.option('--feature_engineering', required=True, is_flag=True, default=False,
