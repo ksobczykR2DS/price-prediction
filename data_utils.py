@@ -1,18 +1,17 @@
-from sklearn.model_selection import train_test_split
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
 
 def _read_data():
     df = pd.read_csv('data/train.csv')
     df = df.drop('Id', axis='columns')
+
     return df
 
 
 def _fill_missing_values(df):
-
     """Handling missing values"""
-
     columns_to_fill = ['MasVnrArea', 'LotFrontage', 'Electrical']
     for c in columns_to_fill:
         df[c].fillna(df[c].mode()[0], inplace=True)
@@ -24,8 +23,8 @@ def _fill_missing_values(df):
         df[c].fillna('Absence', inplace=True)
 
     df['GarageYrBlt'] = df['GarageYrBlt'].fillna(df['YearBuilt'])
-
     assert df.isna().sum().sum() == 0, "There are some missing values in df"
+
     return df
 
 
@@ -60,16 +59,19 @@ def _one_hot_encoding(df):
     df = pd.concat([df, encoded_df], axis=1)
     df = df.drop(columns=categorical_columns)
     assert not df.index.duplicated().any(), "Found duplicated indexes"
+
     return df
 
 
 def load_raw_data(feature_engineering):
     df = _read_data()
     df = _fill_missing_values(df=df)
+
     if feature_engineering:
         df = _feature_engineering(df=df)
 
     df = _one_hot_encoding(df=df)
+
     return df
 
 
