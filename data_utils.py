@@ -14,13 +14,14 @@ def _fill_missing_values(df):
     """Handling missing values"""
     columns_to_fill = ['MasVnrArea', 'LotFrontage', 'Electrical']
     for c in columns_to_fill:
-        df[c].fillna(df[c].mode()[0], inplace=True)
+        mode_value = df[c].mode()[0]
+        df[c] = df[c].fillna(mode_value)
 
     columns_to_mark_as_absence = ['BsmtFinType1', 'BsmtCond', 'BsmtQual', 'BsmtExposure', 'BsmtFinType2', 'GarageQual',
                                   'GarageFinish', 'GarageType', 'GarageCond', 'FireplaceQu', 'MasVnrType', 'Fence',
                                   'Alley', 'MiscFeature', 'PoolQC']
     for c in columns_to_mark_as_absence:
-        df[c].fillna('Absence', inplace=True)
+        df[c] = df[c].fillna('Absence')
 
     df['GarageYrBlt'] = df['GarageYrBlt'].fillna(df['YearBuilt'])
     assert df.isna().sum().sum() == 0, "There are some missing values in df"
