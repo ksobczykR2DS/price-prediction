@@ -31,7 +31,7 @@ def main(model_names_list, feature_engineering, n_iter):
             model_dict[model_name] = model
 
         print(f'Feature engineering: {feature_engineering}')
-        x_train, x_test, y_train, y_test = load_training_data(feature_engineering=feature_engineering)
+        x_train, x_test, y_train, y_test = load_training_data(feature_engineering)
 
         print(f'x_train shape: {x_train.shape}, y_train shape: {y_train.shape}')
         print(f'x_test shape: {x_test.shape}, y_test shape: {y_test.shape}')

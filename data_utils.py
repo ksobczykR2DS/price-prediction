@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 
 def _read_data():
-    df = pd.read_csv('data/train.csv')
+    df = pd.read_csv('baysian-search/data/train.csv')
     df = df.drop('Id', axis='columns')
     return df
 
@@ -26,28 +26,6 @@ def _fill_missing_values(df):
     assert df.isna().sum().sum() == 0, "There are some missing values in df"
 
     return df
-
-
-def _handle_outliers(x, y):
-    """Remove specified outliers and features that are almost constant."""
-    # List of outlier indices
-    outliers = [30, 88, 462, 631, 1322]
-    x = x.drop(x.index[outliers])
-    y = y.drop(y.index[outliers])
-
-    # List to hold features that are almost constant
-    overfit = []
-    # Identify features that are over 99.94% zeros
-    for i in x.columns:
-        counts = x[i].value_counts()
-        zeros = counts.iloc[0]
-        if zeros / len(x) * 100 > 99.94:
-            overfit.append(i)
-
-    # Drop these almost constant features from the feature dataframe
-    x = x.drop(overfit, axis=1)
-
-    return x, y
 
 
 def _feature_engineering(df):
@@ -103,23 +81,21 @@ def load_raw_data(feature_engineering):
     df = _read_data()
     df = _fill_missing_values(df=df)
 
-    if feature_engineering:
-        df = _feature_engineering(df=df)
-
-    df = _one_hot_encoding(df=df)
-
-    return df
-
-
-def load_training_data(feature_engineering):
-    """Load data and split it into training and test"""
-    df = load_raw_data(feature_engineering=feature_engineering)
     target_col = 'SalePrice'
     y = df.pop(target_col)
     x = df.copy()
 
-    # Handle outliers
-    x, y = _handle_outliers(x, y)
+    if feature_engineering:
+        x = _feature_engineering(x)
+
+    x = _one_hot_encoding(x)
+
+    return x, y
+
+
+def load_training_data(feature_engineering):
+    """Load data and split it into training and test"""
+    x, y = load_raw_data(feature_engineering=feature_engineering)
 
     # Split into training and testing datasets
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=1, shuffle=True)
