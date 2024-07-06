@@ -9,7 +9,6 @@ from xgboost import XGBRegressor
 MODELS_DICT = {
     'DT': DecisionTreeRegressor(),
     'RF': RandomForestRegressor(),
-    'SVR': SVR(),
     'LGB': LGBMRegressor(),
     'GBM': GradientBoostingRegressor(),
     'XGB': XGBRegressor()
@@ -33,15 +32,6 @@ MODELS_PARAMS = {
             'regressor_model__min_samples_leaf': Integer(10, 50),
             'regressor_model__min_samples_split': Integer(3, 20),
             'regressor_model__max_features': Categorical(['sqrt', 'log2', None])
-        }
-    ],
-    'SVR': [
-        {
-            'regressor_model__random_state': Categorical([0]),
-            'regressor_model__C': Real(10, 40, prior='log-uniform'),
-            'regressor_model__gamma': Real(1e-4, 1e-1, prior='log-uniform'),
-            'regressor_model__degree': Integer(1, 5),
-            'regressor_model__kernel': Categorical(['linear', 'poly', 'rbf', 'sigmoid']),
         }
     ],
     'GBM': [

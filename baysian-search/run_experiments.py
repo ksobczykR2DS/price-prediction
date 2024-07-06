@@ -10,8 +10,7 @@ from sklearn.preprocessing import StandardScaler
 
 @click.command()
 @click.option('--model_names_list', required=True, type=str, help='list of models to run')
-@click.option('--feature_engineering', required=True, is_flag=True, default=False,
-              help='flag denoting use of engineered features')
+@click.option('--feature_engineering', is_flag=True, default=False, help='flag denoting use of engineered features')
 @click.option('--n_iter', required=True, type=int, help='number of iterations for hyperparameters tuning')
 def main(model_names_list, feature_engineering, n_iter):
     """
@@ -31,7 +30,11 @@ def main(model_names_list, feature_engineering, n_iter):
             model = MODELS_DICT[model_name]
             model_dict[model_name] = model
 
+        print(f'Feature engineering: {feature_engineering}')
         x_train, x_test, y_train, y_test = load_training_data(feature_engineering=feature_engineering)
+
+        print(f'x_train shape: {x_train.shape}, y_train shape: {y_train.shape}')
+        print(f'x_test shape: {x_test.shape}, y_test shape: {y_test.shape}')
 
         for model_name, model in model_dict.items():
             print(f'Running experiments for {model_name}')
@@ -54,3 +57,7 @@ def main(model_names_list, feature_engineering, n_iter):
 
     except Exception as e:
         print(f'An error occurred: {e}')
+
+
+if __name__ == '__main__':
+    main()
